@@ -32,7 +32,7 @@ int main()
 	else if (rc1 == 0)	// child process 1
 	{
 		// write into the pipe
-		write(pfd[1], msg, strlen(msg)+1);
+		write(pfd[1], msg, strlen(msg));
 		wait(NULL);
 	}
 	else	// parent process
