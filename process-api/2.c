@@ -31,14 +31,22 @@ int main()
 	assert(fd > -1);
 
 	rc = fork();
-	if (rc < 0) {  // fork failed, exit
+	if (rc < 0) 
+	{   // fork failed, exit
 		fprintf(stderr, "fork failed\n");
 		exit(1);
-	} else if (rc == 0) {  // child process
-		fw = write(fd, "hello from the child process\n", strlen("hello from the child process\n")); 
-	} else {  // parent process (main)
-		fw = write(fd, "hello from the parent process\n", strlen("hello from the parent process\n")); 
+	} 
+	else if (rc == 0) 
+	{   // child process
+		fw = write(fd, "hello from the child process\n", 
+				strlen("hello from the child process\n")); 
+	} 
+	else 
+	{   // parent process (main)
+		fw = write(fd, "hello from the parent process\n", 
+				strlen("hello from the parent process\n")); 
 	}
 
+	close(fd);
 	return 0;
 }
