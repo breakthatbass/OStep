@@ -1,4 +1,13 @@
 # Operating Systems
 ### Three Easy Pieces
+#### by Remzi H. Arpaci-Dusseau & Andrea C. Arpaci-Duseeau  
+<br>
+My solutions to the exercises (homework) in the book.  
 
-My solutions to the exercises in the book
+*In progress...*
+<br><br>
+
+## Virtualization:
+The Abstraction: The Process  
+[Interlude: Process API](https://github.com/breakthatbass/OStep/tree/main/process-api)  
+Mechanism: Limited Direct Execution
