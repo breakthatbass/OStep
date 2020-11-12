@@ -31,6 +31,7 @@ int main()
 	}
 	else if (rc1 == 0)	// child process 1
 	{
+		close(pfd[0]);
 		// write into the pipe
 		write(pfd[1], msg, strlen(msg));
 		wait(NULL);
