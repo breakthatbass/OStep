@@ -47,6 +47,17 @@
 	 Stats: Total Time 6
 	 Stats: CPU Busy 6 (100.00%)
 	 Stats: IO Busy  4 (66.67%)
-   ```
+   ```  
 
+4. We'll now explore some of the other flags. One important flag is ```-S```,
+   which determines how the system reacts when a process issues and I/O. With
+   the flad set to ```SWITCH_ON_END```, the system will NOT switch to another
+   process while one is doing I/O, instead waiting until the process is
+   completely finished. What happens when you run the following two processes
+   (```-l 1:0,4:100 -c -S SWITCH_ON_END```), one doing I/O and the other doing
+   CPU work?  
 
+   When using ```SWITCH_ON_END``` it only affects processes that make I/O calls.
+   It simply prevents other processes from running while waiting for the I/O to
+   finish. It makes no difference with CPU work since that already only runs
+   once process at a time.
