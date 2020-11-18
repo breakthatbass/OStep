@@ -12,14 +12,41 @@
    Stats: IO Busy  0 (0.00%)
    ```  
 
-2. Now run with these flags: ```.process-run.py -l 4:100,1:0```. These flags
+2. Now run with these flags: ```./process-run.py -l 4:100,1:0```. These flags
    specify one process with 4 instructions (all to use the CPU), and one that
-   simply issues an I/O and waits for it to be done.  
+   simply issues an I/O and waits for it to be done. How long does it take to
+   complete both processes? Use ```-c``` and ```-p``` to see if you were right.  
 
-   How long does it take to complete both processes? Use ```-c``` and ```-p```
-   to find out if you were right.  
+   It takes the same amount of time as the previous question, 10. After the I/O
+   call, it waits to finish which gives that process a total time of 5 even
+   though it was inserted as ```1:0```. And it ends with the ```DONE``` signal
+   from the IO call adding a sixth.  
 
+3. Switch the order of the process: ```.process-run.py -l 1:0,4:100```. What
+   happens now? Does switching the order matter? Why? (As always use ```-c```
+   and ```-p``` to see if you were right).  
 
+   Running with just the ```-l``` flags shows that it works the same as the
+   previous invocation but flipped. However, a good assumption with this would
+   be that since the I/O would be made before the CPU call, while the I/O is
+   waiting, it would most likely then run the CPU call, probably resulting in
+   less time. Let's see.
 
+   Yes. It had a total time of 6 and does indeed run the CPU calls while waiting
+   for the I/O to do its thing. Here's what it returns:  
+
+   ```
+   Time    PID: 0    PID: 1       CPU       IOs
+     1     RUN:io     READY         1          
+	 2    WAITING   RUN:cpu         1         1
+	 3    WAITING   RUN:cpu         1         1
+	 4    WAITING   RUN:cpu         1         1
+	 5    WAITING   RUN:cpu         1         1
+	 6*      DONE      DONE         1
+
+	 Stats: Total Time 6
+	 Stats: CPU Busy 6 (100.00%)
+	 Stats: IO Busy  4 (66.67%)
+   ```
 
 
