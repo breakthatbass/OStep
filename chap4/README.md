@@ -36,8 +36,7 @@
 
    I know this because of the usage of the program that prints out. It says:  
 
-   ```Must be number <x:y>...Y is the percent change that an instruction is CPU not
-   IO.```  
+   ```Must be number <x:y>...Y is the percent change that an instruction is CPU not IO.```  
 
    Using the ```-c``` and ```-p``` flags returns more info:  
 
