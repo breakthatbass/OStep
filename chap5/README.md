@@ -100,72 +100,12 @@ and we have 3 actions, we wouldn't abele to tell if the actions were ```a+b,a+c,
 1. Write a program that calls `fork()`. Before calling `fork()`, have the main process access a variable (e.g., `x`) and set its value to something (e.g., 100). What value is the variable in the child process? What happens to the variable when both the child and parent change the value of `x`?  
 <br>The value of `x` in the child process is the same in the main process unless redefined in the child. If both the child and parent change the value of `x`, the changes are only reflected with the processes themselves and have no effect on the other processes.
 
-``` c
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-int main()
-{
-    int x = 100;
-    int rc = fork();
-    if (rc < 0) {   // fork failed, exit
-        fprintf(stderr, "fork failed...\n");
-        exit(1);
-    } else if (rc == 0) {   // child process
-		printf("child x (unchanged from parent): %d\n", x);
-        x = 101;
-        printf("child x (changed to 101): %d\n", x);
-    } else {    // parent process
-        int rc_wait = wait(NULL);   // wait until child process is done
-        printf("parent x: %d\n", x);
-        x= 102;
-        printf("redefined parent x: %d\n", x);
-    }
-    return 0;
-}
-```
+[code: 1.c](https://github.com/breakthatbass/OStep/blob/main/chap5/1.c)
 
 ---
 2. Write a program that opens a file (with the `open()` system call) and then calls `fork()` to create a new process. Can both the child and parent access the file descriptor returned by `open()`? What happens when they are writing to the file concurrently, i.e., at the same time?  
 <br>Yes, both child and parent can access file descriptor. It seems the parent writes to the descriptor before the child does usually.
 
-```c
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <assert.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <string.h>
+[code: 2.c](https://github.com/breakthatbass/OStep/blob/main/chap5/2.c)
 
-int main()
-{
-	int fd;  // file descriptor, for open 
-	int fw;  // var used to write to fd
-	int rc;  // var used to fork processes
-
-	fd = open("file.txt", O_WRONLY | O_CREAT | O_TRUNC , S_IRWXU);
-	assert(fd > -1);
-
-	rc = fork();
-	if (rc < 0) 
-	{   // fork failed, exit
-		fprintf(stderr, "fork failed\n");
-		exit(1);
-	} 
-	else if (rc == 0) 
-	{   // child process
-		fw = write(fd, "hello from the child process\n", 
-				strlen("hello from the child process\n")); 
-	} 
-	else 
-	{   // parent process (main)
-		fw = write(fd, "hello from the parent process\n", 
-				strlen("hello from the parent process\n")); 
-	}
-
-	close(fd);
-	return 0;
-}
-```
+---
