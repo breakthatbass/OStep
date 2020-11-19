@@ -3,7 +3,6 @@
 Skip to [code section](https://github.com/breakthatbass/OStep/tree/main/chap5#code)
 
 # Simulation
-
 1. Run ```./fork.py -s 10``` and see which actions are taken. Can you predict
    what the process tree looks like at each step? Use the ```-c``` flag to check
    your answers. Try some different random seeds (```-s```) or add more actions
