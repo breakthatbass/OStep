@@ -22,6 +22,11 @@
    ```fork_percentage```, the trees look simpler since so many of the forks end
    up getting exited.  
 ---
+3. Now, switch the output by using the ```-t``` flag (e.g., run ```./fork.py -t```). Given a set of process trees, can you tell which actions were taken?  
+
+
+
+
 
 
 
