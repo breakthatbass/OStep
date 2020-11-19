@@ -77,5 +77,18 @@
    Using ```-R``` causes random exits of other forks.  
 ---  
 
+5. One last flag to explore is the `-F` flag, which skips intermediate steps and only asks to fill in the final process tree. Run `./fork.py -F` and see if you can write down the final tree by looking at the series of actions generated. Use different random seeds to try this a few times.  
+---  
+6. Finally, use both `-t` and `-F` together. This shows the final process tree, but then asks you to fill in the actions that took place. By looking at the tree, can you determine the exact actions that took place? In which cases can you tell? In which can’t you tell? Try some different random seeds to delve into this question.  
+
+It's hard to tell when a fork is created and is exited. For example, if we have
+simply:  
+```
+a
+|_c
+```
+and we have 3 actions, they could be `a+b, a+c, -b` or `a+b, b+c, -b` and we
+wouldn't be able to know.  
+---  
 
 ### Code  
