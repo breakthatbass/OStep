@@ -32,7 +32,7 @@
    like after the exit? What if you use the ```-R``` flag? Learn more about what
    happens to orphaned processes on your own to add more context.  
 
-   The process will look like this:  
+   I thought the  process would look like this:  
 
    ```
    a
@@ -65,9 +65,17 @@
    |_b
    ```
 
-
-
-
+   but the last step is this:
+   ```
+   a
+   |_b
+   |_d
+   |_e
+   ```  
+   Which means that if a fork exits but has children, the children of the exited
+   fork get "adopted" by the root process.  
+   Using ```-R``` causes random exits of other forks.  
+---  
 
 
 ### Code  
