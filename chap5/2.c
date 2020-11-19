@@ -1,18 +1,3 @@
-/**
- * chapter 5: process api
- * exercise 2: write a program that opens a file (with the open() system call)
- * and then calls fork() to create a new process.
- *
- * can both the child and parent access the file descriptor returned by open()? 
- *  - yes
- * 
- * what happens when they are writing to the file concurrently, i.e, at the same
- * time?
- *  - the parent process seems to write to the descriptor before the child does
- *
- * */
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
