@@ -14,7 +14,8 @@
    ```fork_percentage``` from 0.1 to 0.9. what do you think the resulting final
    process trees will look like as the precentage changes? Check your answers
    with ```-c```.    
-<br>
+   
+
    The higher the the ```fork_percentage``` is, there is more forks being
    created and less ```EXITS``` so the resulting process trees end up looking
    pretty complicated with all sort of forks off of forks, etc. With a lower
