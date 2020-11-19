@@ -1,12 +1,3 @@
-/**
- * chapter 5: process api
- * exercise 7: write a program that creates a child process, and then in the
- * child closes standard output (STDOUT_FILENO). what happens if the child calls
- * printf() to print some output after closding the descriptor.
- *  - it doesn't print anything.
- *
- * */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

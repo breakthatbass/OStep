@@ -115,3 +115,31 @@ and we have 3 actions, we wouldn't abele to tell if the actions were ```a+b,a+c,
 [code: 3.c](https://github.com/breakthatbass/OStep/blob/main/chap5/3.c)  
 
 ---
+4. Write a program that calls `fork()` and then calls some form of `exec()` to
+run the program `/bin/ls`. See if you can try all of the variants of `exec()`, including(on Linux)`execl()`, `execle()`, `execlp()`, `execv()`, `execvp()`, and `execvpe()`. Why do you think there are so many variants of the same basic call?  
+<br>I'm not exactly sure. my guess is that it can be called on files and shell commands with the ability to not only give commands with each, but also the ability to define the environment (which I just have defined as `NULL`).  
+
+[code: 4.c](https://github.com/breakthatbass/OStep/blob/main/chap5/4.c) 
+
+---
+5. Now write a program that uses `wait()` to wait for the child process to finish in the parent. What does `wait()` return? What happens if you use `wait()` in the child?  
+<br>`wait()` return the pid of the process. Using `wait()` in the child returns `-1` which means it has no child processes. Nothing really happens in that case. It just moves on.  
+
+[code: 5.c](https://github.com/breakthatbass/OStep/blob/main/chap5/5.c) 
+
+---
+6. Write a slight modification of the previous program, this time using `waitpid()` instead of `wait()`. When would `waitpid()` be useful?  
+<br>This would be helpful to use when there are a lot of processes or if processes are getting paused or exiting since you can add options to dictate how `wait()` acts.  
+
+[code: 6.c](https://github.com/breakthatbass/OStep/blob/main/chap5/6.c)
+
+---
+7. Write a program that creates a child process, and then in the child closes standard output (`STDOUT_FILENO`). What happens if the child calls `printf()` to print some output after closing the descriptor?  
+<br>It doesn't print anything.
+
+[code: 7.c](https://github.com/breakthatbass/OStep/blob/main/chap5/7.c)  
+
+---
+8. Write a program that creates two children, and connects the standard output of one to the standard input of the other, using the `pipe()` system call.  
+
+[code: 8.c](https://github.com/breakthatbass/OStep/blob/main/chap5/8.c) 

@@ -1,15 +1,3 @@
-/**
- * chapter 5: process api
- * exercise 6: write a slight modification to the previous program, this time
- * using waitpid() instead of wait(). 
- *
- * when would waitpid() be useful?
- * - this would be helpful to use when there are a lot of processes or if
- *   processes are getting paused or exiting since you can add options to
- *   dictate how wait acts.
- *
- * */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
