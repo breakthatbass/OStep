@@ -1,5 +1,7 @@
 # Interlude: Process API
 
+Skip to [code section](https://github.com/breakthatbass/OStep/tree/main/chap5#code)
+
 ### Simulation
 
 1. Run ```./fork.py -s 10``` and see which actions are taken. Can you predict
