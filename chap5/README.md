@@ -16,7 +16,7 @@
    with ```-c```.    
    
 
-   The higher the the ```fork_percentage``` is, there is more forks being
+   The higher the the ```fork_percentage``` is, there are more forks being
    created and less ```EXITS``` so the resulting process trees end up looking
    pretty complicated with all sort of forks off of forks, etc. With a lower
    ```fork_percentage```, the trees look simpler since so many of the forks end
