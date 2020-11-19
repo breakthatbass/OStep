@@ -74,8 +74,8 @@
    IO_RUN_LATER```, when an I/O completes, the process that issued it is not
    necessarily run right away; rather, whatever was running at the time keeps
    running. What happens when you run this combination of processes? (Run
-   ```./process-run.py -l 3:0,5:100,5:100,5:100 -S SWITCH_ON_IO -I IO_RUN_LATER
-   -c -p```) Are system resources being effectively utilized?  
+   ```.process-run.py -l 3:0,5:100,5:100,5:100 -S SWITCH_ON_IO -I IO_RUN_LATER
+   -c -p```). Are system resources being effectively utilized?  
 
 	```
 	   Stats: Total Time 27
