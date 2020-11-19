@@ -23,7 +23,47 @@
    up getting exited.  
 ---
 3. Now, switch the output by using the ```-t``` flag (e.g., run ```./fork.py -t```). Given a set of process trees, can you tell which actions were taken?  
+---  
+4. One interesting thing to note is what happens when a child exits; What
+   happens to its children in the process tree? To study this, let's create a
+   specific example: ```./fork.py -A a+b,b+c,c+d,c+e,c-```. This example has
+   process 'a' create 'b', which in turn creates 'c', which tehn creates 'd' and
+   'e'. However, then, 'c' exits.What do you think the process tree should look
+   like after the exit? What if you use the ```-R``` flag? Learn more about what
+   happens to orphaned processes on your own to add more context.  
 
+   The process will look like this:  
+
+   ```
+   a
+   |_b
+   
+   --
+
+   a
+   |_b
+	 |_c
+   
+   --
+
+   a
+   |_b
+     |_c
+	   |_d
+
+   --
+
+   a
+   |_b
+     |_c
+	   |_d
+	   |_e
+
+   --
+
+   a
+   |_b
+   ```
 
 
 
