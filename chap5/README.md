@@ -109,3 +109,9 @@ and we have 3 actions, we wouldn't abele to tell if the actions were ```a+b,a+c,
 [code: 2.c](https://github.com/breakthatbass/OStep/blob/main/chap5/2.c)
 
 ---
+3. Write another program using `fork()`. The child process should print “hello”; the parent process should print “goodbye”. You should try to ensure that the child process always prints first; can you do this *without* calling `wait()` in the parent?  
+<br>It is possible. The `kill()` function can be used to send signals to specific processes even from other processes based on PIDs. I used the `kill()` function in the parent process right before the "goodbye" prints. Once paused, the child process continues and prints the "hello" string which then it encounters another `kill()` call which sends a signal to the parent process to continue. 
+
+[code: 3.c](https://github.com/breakthatbass/OStep/blob/main/chap5/3.c)  
+
+---
