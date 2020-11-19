@@ -83,12 +83,14 @@
 
 It's hard to tell when a fork is created and is exited. For example, if we have
 simply:  
+
 ```
 a
 |_c
-```  
-and we have 3 actions, they could be a+b, a+c, -b or a+b, b+c, -b and we
-wouldn't be able to know.  
+```
+and we have 3 actions, we wouldn't abele to tell if the actions were ```a+b,a+c,b-``` or ```a+b,b+c,b-```.
+  
+
 ---  
 
 ### Code  
