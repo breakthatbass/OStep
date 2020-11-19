@@ -4,7 +4,7 @@ Skip to [code section](https://github.com/breakthatbass/OStep/tree/main/chap5#co
 
 #
 ## Simulation
-#
+
 1. Run ```./fork.py -s 10``` and see which actions are taken. Can you predict
    what the process tree looks like at each step? Use the ```-c``` flag to check
    your answers. Try some different random seeds (```-s```) or add more actions
@@ -94,9 +94,7 @@ a
 and we have 3 actions, we wouldn't abele to tell if the actions were ```a+b,a+c,b-``` or ```a+b,b+c,b-```.
   
 # 
-
 ## Code  
-#  
 
 1. Write a program that calls `fork()`. Before calling `fork()`, have the main process access a variable (e.g., `x`) and set its value to something (e.g., 100). What value is the variable in the child process? What happens to the variable when both the child and parent change the value of `x`?  
 <br>The value of `x` in the child process is the same in the main process unless redefined in the child. If both the child and parent change the value of `x`, the changes are only reflected with the processes themselves and have no effect on the other processes.
