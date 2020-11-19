@@ -60,4 +60,53 @@
    When using ```SWITCH_ON_END``` it only affects processes that make I/O calls.
    It simply prevents other processes from running while waiting for the I/O to
    finish. It makes no difference with CPU work since that already only runs
-   once process at a time.
+   once process at a time.  
+
+5. Now, run the same processes, but with the switching behavior set to switch to
+   another process whenever one is ```WAITING``` for I/O (```-l 1:0,4:100 -c -S
+   SWITCH_ON_IO```). What happens now? Use ```-c``` and ```-p``` to confirm that
+   you are right.  
+
+   This seems to work the same as default where it will switch processes while
+   waiting on I/O.   
+
+6. One other important behavior is what to do when an I/O completes. With ```-I
+   IO_RUN_LATER```, when an I/O completes, the process that issued it is not
+   necessarily run right away; rather, whatever was running at the time keeps
+   running. What happens when you run this combination of processes? (Run
+   ```./process-run.py -l 3:0,5:100,5:100,5:100 -S SWITCH_ON_IO -I IO_RUN_LATER
+   -c -p```) Are system resources being effectively utilized?  
+
+	```
+	   Stats: Total Time 27
+	   Stats: CPU Busy 19 (70.37%)
+	   Stats: IO Busy  12 (44.44%)
+	```
+	
+	System resources are not effectively utilized.There are 3 I/O calls in the
+	first process and then 3 CPU processes. It first calls the first I/O, while
+	it waits it runs the first CPU call and then continues to run the rest of
+	the CPU calls before going back to the I/O calls in the first process. It
+	then calls those I/Os and has a lot of waiting.  
+
+7. Now run the same processes, but with ```-I IO_RUN_IMMEDIATE``` set, which
+   immediately runs the process that issued the I/O. How does this behavior
+   differ? Why might running a process that just completed an I/O again be a
+   good idea?
+
+   The behavior differs in that it prioritizes running the I/O process over the
+   others. This is a good idea because once the I/O is done waiting, it
+   immediately calls the next I/O and while waiting for each one, run thes CPU
+   processes. Ultimately having a total time of 18 compared to 27 in the last
+   question.  
+
+8. Now run with some randomly generated processes: ```-s 1 -l 3:50,3:50``` or
+   ```-s 2 -l 3:50,3:50``` or ```-s 3 -l 3:50,3:50```. See if you can predict
+   how the trace will turn out. What happens when you use the flag ```-I
+   IO_RUN_IMMEDIATE``` vs ```-I IO_RUN_LATER```? What happens when you use
+   ```-S SWITCH_ON_IO``` vs ```-S SWITCH_ON_END```  
+
+   There's not much of a difference besides the fact that ```SWITCH_ON_IO```
+   results in less time since it prioritizes running I/O and then runs other
+   processes while waiting.  
+
