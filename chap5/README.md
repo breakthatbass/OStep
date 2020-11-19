@@ -87,7 +87,7 @@ simply:
 a
 |_c
 ```  
-	and we have 3 actions, they could be `a+b, a+c, -b` or `a+b, b+c, -b` and we
+	and we have 3 actions, they could be a+b, a+c, -b or a+b, b+c, -b and we
 	wouldn't be able to know.  
 ---  
 
