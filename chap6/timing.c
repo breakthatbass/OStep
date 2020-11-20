@@ -5,19 +5,7 @@
 #include <assert.h>
 #include <fcntl.h>
 
-#define loops 10000000	// ten million
-
-
-// read_loop: do an empty read() system call loops times
-void read_loop(int fd)
-{
-	char to;
-	int i;
-
-	for (i = 0; i < loops; i++)
-		read(fd, &to, 0);
-}
-
+#define loops 100000
 
 
 int main(int argc, char **argv)
@@ -31,7 +19,10 @@ int main(int argc, char **argv)
 	assert(fd > -1);
 	
 	gettimeofday(&start, NULL);		// get time now, store in start
-	read_loop(fd);					// read from fd loops times
+	
+	for (int i = 0; i < loops; i++)
+		read(fd, NULL, 0);
+
 	gettimeofday(&stop, NULL);		// get time now, store in stop
 
 	// compute total time
@@ -40,7 +31,7 @@ int main(int argc, char **argv)
 			start.tv_sec * 
 			loops - start.tv_usec)/loops;
 
-	printf("%f\n", ttime);
+	printf("%f seconds\n", ttime);
 	close(fd);
 	// rm test file created
 	system("rm test.txt");
