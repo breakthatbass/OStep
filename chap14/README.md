@@ -49,19 +49,19 @@
     - The program runs just fine. `gdb` and (`lldb` for that matter) does not detect errors. `valgrind` returns this:
 
     ```
-    ==19861== HEAP SUMMARY:
-    ==19861==     in use at exit: 0 bytes in 0 blocks
-    ==19861==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
-    ==19861== 
-    ==19861== All heap blocks were freed -- no leaks are possible
-    ==19861== 
-    ==19861== For lists of detected and suppressed errors, rerun with: -s
-    ==19861== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+    ==28147== LEAK SUMMARY:
+    ==28147==       definitely lost: 200 bytes in 1 blocks
+    ==28147==       indirectly lost: 0 bytes in 0 blocks
+    ==28147==       possibly lost: 8,840 bytes in 7 blocks
+    ==28147==       still reachable: 10,221 bytes in 158 blocks
+    ==28147==       suppressed: 0 bytes in 0 blocks
+    ==28147==       Reachable blocks (those to which a pointer was found) are not shown.
+    ==28147==       To see them, rerun with: --leak-check=full --show-leak-kinds=all
     ```
-    - `valgrind` is buggy it seems... should have been at least 4 bytes in use at exit and at least one alloc...
+    - It seems to be leaking memory
 
 5. Write a program that creates an array of integers called `data` of size 100 using `malloc`; then, set `data[100]` to zero. What happens when you run this program? What happens when you run this program using valgrind? Is the program correct?
-    - `valgrind`, again, isn't detecting issues here. I assume it would say there's an invalid write if it were not buggy. Big Sur causing me all sorts of development problems...
+    - Invalid write
 
 6. Create a program that allocates an array of integers (as above), frees them, and then tries to print the value of one of the elements of the array. Does the program run? What happens when you use `valgrind` on it?
 
