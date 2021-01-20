@@ -62,9 +62,8 @@ int get(counter_t *c)
 static void *tfunc(void *arg)
 {
     pthread_t threadID = pthread_self();  // nifty function
-    for (int i = 0; i < MIL; i++) {
-        update((counter_t*)arg, (int)threadID, 1);
-    }
+    for (int i = 0; i < MIL; i++)
+        update((counter_t*)arg, (int)threadID, 1); // just add 1 to counter
     return NULL;
 }
 
@@ -72,8 +71,9 @@ static void *tfunc(void *arg)
 int main(int argc, char **argv)
 {
     int thold, i;
-    counter_t *c;   // our counter struc
+    counter_t *c;   // our counter struct
     pthread_t *t;   // array of threads (num of cpus)
+    // timing stuff
     float ttime;
     struct timeval start, stop;
 
@@ -86,17 +86,14 @@ int main(int argc, char **argv)
         fprintf(stderr, "threshold must be a number\n");
         exit(EXIT_FAILURE);
     }
-
     thold = atoi(argv[1]);
 
     c = malloc(sizeof(counter_t)); assert(c);
-
-    init(c, thold);
-    
     t = malloc(sizeof(pthread_t)*NUMCPUS); assert(t);
 
-    gettimeofday(&start, NULL);	
+    init(c, thold);
 
+    gettimeofday(&start, NULL);	
     // no error checking as to not spend cpu power/time on error checking
     // to hopefully have more accurate timing
     for (i = 0; i < NUMCPUS; i++)
@@ -104,7 +101,6 @@ int main(int argc, char **argv)
 
     for (i = 0; i < NUMCPUS; i++)
         pthread_join(t[i], NULL);
-
     gettimeofday(&stop, NULL);
 
     // compute total time
