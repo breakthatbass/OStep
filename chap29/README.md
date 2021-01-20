@@ -28,3 +28,51 @@ For all the questions below on timing and plotting the times I used a **2.7 GHz 
     In the book a threshold of 1 took about 12 seconds to complete. A threshold of 2 took about 6 seconds. My program (copied from the book) took 0.6 seconds with a threshold of 1 and just under a half of a second for a threshold of 2. And starts to match the book around a threshold of 32. I have a similar processor archtiecture to the one used in the book, however, I believe the book's OS is Linux. So I imagine that might have something to do with the difference.
 
     ![approximation](plot.png)
+
+
+4. Build a version of a linked list that uses hand-over-hand locking [MS04], as cited in the chapter. You should read the paper first to understand how it works, and then implement it. Measure its performance. When does a hand-over-hand list work better than a standard list as shown in the chapter?
+
+    the hand-over-hand list is always a bit slower no matter what on my system.
+
+    **hand-over-hand list**
+    ```
+    threads: 1
+    count: 1000000
+    time: 0.125221
+
+    threads: 2
+    count: 2000000
+    time: 0.169981
+
+    threads: 3
+    count: 3000000
+    time: 0.222011
+
+    threads: 4
+    count: 4000000
+    time: 0.267852
+    ```
+    **normal concurrent list**
+    ```
+    threads: 1
+    count: 1000000
+    time: 0.077794
+
+    threads: 2
+    count: 2000000
+    time: 0.145959
+
+    threads: 3
+    count: 3000000
+    time: 0.156857
+
+    threads: 4
+    count: 4000000
+    time: 0.181931
+    ```
+
+5. Pick your favorite data structure, such as a B-tree or other slightly more interesting structure. Implement it, and start with a simple locking strategy like a simgle lock. Measure its performance as the number of concurrent threads increases.
+
+
+
+6. Finally think of a more interesting locking strategy for this favorite data structure of yours. Implement it, and measure its performance. How does it compare to the straightforward locking approach?
