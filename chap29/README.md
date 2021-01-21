@@ -40,7 +40,7 @@ For all the questions below on timing and plotting the times I used a **2.7 GHz 
 
 4. Build a version of a linked list that uses hand-over-hand locking [MS04], as cited in the chapter. You should read the paper first to understand how it works, and then implement it. Measure its performance. When does a hand-over-hand list work better than a standard list as shown in the chapter?
 
-    [hand-over-hand list code](https://github.com/breakthatbass/OStep/blob/main/chap29/hoh-list.c)
+    [hand-over-hand list code](https://github.com/breakthatbass/OStep/blob/main/chap29/hoh-list.c)  
     [single lock list](https://github.com/breakthatbass/OStep/blob/main/chap29/conc-list.c)
 
     the hand-over-hand list is always a bit slower no matter what on my system.
