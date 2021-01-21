@@ -17,6 +17,8 @@
 #include <pthread.h>
 #include <assert.h>
 #include <ctype.h>
+#include <sys/time.h>
+//#include <time.h>
 
 // easier error checking
 #define lock_doors(lock) assert(pthread_mutex_lock(lock) == 0);
@@ -38,6 +40,15 @@ typedef struct tree {
 	pthread_mutex_t tree_lock;
 	int count;
 } tree_t;
+
+
+// tree_init: initiate a tree and lock
+void tree_init(tree_t *t)
+{
+	t->root = NULL;
+	t->count = 0;
+	pthread_mutex_init(&t->tree_lock, NULL);
+}
 
 
 // new_node: create and return a new node for the tree
@@ -93,7 +104,6 @@ void add_node(tree_t *t, char *key, char *value)
 			tmp = tmp->right;
 		}
 	}
-		//t->count++;
 		unlock_doors(&t->tree_lock);
 }
 
@@ -110,31 +120,80 @@ void treeprint(node_t *t)
 }
 
 
-// tree_init: initiate a tree and lock
-void tree_init(tree_t *t)
+// rand_str: create a random string
+char *rand_str()
 {
-	t->root = NULL;
-	t->count = 0;
-	assert(pthread_mutex_init(&t->tree_lock, NULL) == 0);
+	static char s[6];
+	const char *alphanum = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	
+	for (int i = 0; i < 5; i++)
+		s[i] = alphanum[rand() % (strlen(alphanum) - 1)];
+
+	s[5] = 0;
+	return s;
+}
+
+
+void *tfunc(void *arg)
+{
+    uint64_t i;
+    tree_t *b = (tree_t*)arg; // arg is a tree
+    for (i = 0; i < MIL; i++) {
+		char *s = rand_str();
+		// add a rand string to tree with a value of "1"
+		add_node(b, s, "1");
+	}
+    return NULL;
 }
 
 
 int main(int argc, char **argv)
 {
-	// assume int for now
-	//int threads = atoi(*++argv);
+	int i, threads;
+	pthread_t *t;	// array of threads
+	tree_t *b;
 
-	tree_t *b = malloc(sizeof(tree_t)); assert(b); 
+	// timing stuff
+    float ttime;
+    struct timeval start, stop;
+
+    // make sure usage is right
+    if (argc != 2) {
+        fprintf(stderr, "usage: ./a.out <no. of threads>\n");
+        exit(EXIT_FAILURE);
+    }
+    if (!isdigit(*argv[1])) {
+        fprintf(stderr, "threads must be a number\n");
+        exit(EXIT_FAILURE);
+    }
+    threads = atoi(argv[1]);
+
+	t = malloc(sizeof(pthread_t)*threads); assert(t);
+	b = malloc(sizeof(tree_t)); assert(b); 
 	tree_init(b);
 
-	add_node(b, "taylor", "33");
-	add_node(b, "catharine", "37");
-	add_node(b, "suki", "5");
+	gettimeofday(&start, NULL);	
+	for (i = 0; i < threads; i++)
+        assert(pthread_create(&t[i], NULL, &tfunc, b) == 0);
 
+    for (i = 0; i < threads; i++)
+        assert(pthread_join(t[i], NULL) == 0);
+    gettimeofday(&stop, NULL);
+
+    // compute total time
+	ttime = (float)(stop.tv_sec * MIL + 
+			stop.tv_usec - 
+			start.tv_sec * 
+			MIL - start.tv_usec)/MIL;
+
+	//ttime = (float)
+
+	//treeprint(b->root);
 	printf("%d\n", b->count);
-
-	treeprint(b->root);
+	printf("time: %f\n", ttime);
+	
 
 	free(b);
+	free(t);
 	return 0;
 }
