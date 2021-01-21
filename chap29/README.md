@@ -1,10 +1,14 @@
 For all the questions below on timing and plotting the times I used a **2.7 GHz Dual-Core Intel Core i5** processor with **macOS 11.1** (Big Sur).
 
-1. `gettimeofday()` works for me.
+1. We'll start by redoing the measurements within this chapter. Use the call `gettimeofday()` to measure time within your program. How accurate is this timer? What is the smallest interval it can measure? Gain confidence in its workings, as we will need it in all subsequent questions. You can also look into other timers, such as the cycle counter available on `x86` via the `rdtsc` instruction.
+
+    `gettimeofday()` is accurate enough for me. All that's important here is that there is a way measure each program and then use those measurements to compare other measurements.
+
 2. Now, build a simple concurrent counter and measure how long it takes to increment the counter many times as the number of threads increases. How many CPUs are available on the system you are using? Does this number impact your measurements at all?
 
-    `$ sysctl hw.physicalcpu` returns 2 CPUs, however, `sysconf(_SC_NPROCESSORS_ONLN)` returns 4. I imagine I have two physical cores and 4 virtualized cores. I am sure this number impacts my measurements but I don't have another system to test it on.
+    The `sysctl hw.physicalcpu` command returns 2 CPUs, however, the `sysconf(_SC_NPROCESSORS_ONLN)` C function returns 4. I imagine I have two physical cores and 4 virtualized cores. I am sure this number impacts my measurements but I don't have another system to test it on.
 
+    **Counter**
     ```
     threads: 1
     count: 1000000
@@ -71,6 +75,8 @@ For all the questions below on timing and plotting the times I used a **2.7 GHz 
     time: 0.181931
     ```
 
+    ![list plot](listplot.png)
+
 5. Pick your favorite data structure, such as a B-tree or other slightly more interesting structure. Implement it, and start with a simple locking strategy like a simgle lock. Measure its performance as the number of concurrent threads increases.
 
     I chose to do a [binary tree](https://github.com/breakthatbass/OStep/blob/main/chap29/conctree.c) since that's the only other data structure I'm somwhat comfortable with other than what we've already done (counters, linked lists).
@@ -79,6 +85,6 @@ For all the questions below on timing and plotting the times I used a **2.7 GHz 
 
 6. Finally think of a more interesting locking strategy for this favorite data structure of yours. Implement it, and measure its performance. How does it compare to the straightforward locking approach?
 
-    I made two binary trees similar to the two linked lists. One tree had a single lock in the root (which is just a pointer to the first node) and the other [tree]() had a lock for each node. Similar to the lists, the tree with a lock in each node, like the hand-over-hand list, performed slower. Looking at the graph below, it performed dramatically slower than the single lock tree. I imagine an aproximation tree could come in handy here. Or maybe it could simply be omptimized by someone more skilled than me!
+    I made two binary trees similar to the two linked lists. One [tree had a single lock](https://github.com/breakthatbass/OStep/blob/main/chap29/conctree.c) in the root (which is just a pointer to the first node) and the other [tree had a lock for each node](https://github.com/breakthatbass/OStep/blob/main/chap29/hohtree.c). Similar to the lists, the tree with a lock in each node, like the hand-over-hand list, performed slower. Looking at the graph below, it performed dramatically slower than the single lock tree. I imagine an aproximation tree could come in handy here. Or maybe it could simply be omptimized by someone more skilled than me!
 
     ![tree plot](treeplot.png)
