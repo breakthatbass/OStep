@@ -1,8 +1,9 @@
 #ifdef Linux
 	#define _GNU_SOURCE
+#elif Darwin
+	#define _DARWIN_C_SOURCE
 #endif
-#define _GNU_SOURCE
-// default MacOS 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -10,6 +11,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <sched.h>
+#include <libcpuid.h>
 
 #define handle_error_en(en, msg) \
 	           do { errno = en; perror(msg); exit(EXIT_FAILURE);  } while (0)
