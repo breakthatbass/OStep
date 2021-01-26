@@ -87,6 +87,7 @@ int main(int argc, char **argv)
 
     fclose(in);
     fclose(out);
+    free(s)
 
     return 0;
 }
