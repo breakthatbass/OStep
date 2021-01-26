@@ -8,12 +8,6 @@
 
 #define MAXLINE 1024
 
-void reverse(char **s, FILE *p)
-{
-    while(*--s)
-        fprintf(p, "%s", *s);
-}
-
 int main(int argc, char **argv)
 {
     int infile = 0;
@@ -58,7 +52,7 @@ int main(int argc, char **argv)
         status = fstat(fint, &z);
 	    size = z.st_size;
         close(fint);
-        s = malloc(sizeof(char)*size+1);
+        s = malloc(sizeof(char)*MAXLINE+1);
         if (s == NULL) {
             fprintf(stderr, "malloc falied\n");
             exit(1);
@@ -73,9 +67,10 @@ int main(int argc, char **argv)
 
     char *buf = NULL;
     size_t sz = 0;
-
+    
     while (getline(&buf, &sz, in) != EOF) {
-        *s = malloc(sizeof(char)*MAXLINE);
+        if (strcmp(buf, "\n") == 0) continue;
+        *s = malloc(sizeof(char)*strlen(buf)+1);
         if (s == NULL) {
             fprintf(stderr, "malloc falied\n");
             exit(1);
@@ -83,11 +78,14 @@ int main(int argc, char **argv)
         strcpy(*s, buf);
         s++;
     }
-    reverse(s, out);
-
-    fclose(in);
+    
+    while(*--s)
+        fprintf(out, "%s", *s);
+       
+    
+    if (infile == 1) fclose(in);
     fclose(out);
-    free(s)
+    free(++s);
 
     return 0;
 }
