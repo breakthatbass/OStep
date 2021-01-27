@@ -1,6 +1,6 @@
 CC=gcc
-CFLAGS=-pthread -g
-SRC_FILES=pzip.c
+CFLAGS=-pthread -O -g -Wall -Werror -W -Wextra -pedantic #-fsanitize=address 
+SRC_FILES=pzip.c main.c
 NAME = pzip
 
 all: $(NAME)

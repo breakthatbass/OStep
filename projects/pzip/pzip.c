@@ -10,49 +10,72 @@
 
 #include "pzip.h"
 
+static int done = 0;
+
 pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t c = PTHREAD_COND_INITIALIZER;
+
+
+// thr_wait: stop and wait for thread to finish before moving on
+void thr_wait()
+{
+    assert(pthread_mutex_lock(&m) == 0);
+    while (done == 0)
+        assert(pthread_cond_wait(&c, &m) == 0);
+    assert(pthread_mutex_unlock(&m) == 0);
+}
+
+
+// thr_exit: send signal that thread is done
+void thr_exit()
+{
+    assert(pthread_mutex_lock(&m) == 0);
+    done = 1;
+    assert(pthread_cond_signal(&c) == 0);
+    assert(pthread_mutex_unlock(&m) == 0);
+}
+
 
 // buf_split: split file buffer into threads sections
-char **buf_split(const char *buf, int size, int threads)
+char **buf_split(char *buf, int size, int threads)
 {
     char **split_buf;
-    int portion, offset;
+    int portion, extra;
+    int n = threads;
 
     portion = size/threads;
-    offset = size-(portion*threads);
-    offset+=portion;
+    extra = size%threads;
+    extra+=portion;
 
-    split_buf = malloc(sizeof(char)*size+threads);
-    assert(split_buf != NULL);
+    split_buf = malloc(sizeof(char*)*size);
+    assert(split_buf);
 
     // if the portion division leaves an offset, add that
     // extra amount to the first string
-    if (offset > 0) {
-        *split_buf = malloc(sizeof(char)*offset+1);
-        assert(*split_buf != NULL);
-        memcpy(*split_buf, buf, offset);
-        buf += offset;
-        split_buf++;
-    }
+    *split_buf = malloc(sizeof(char)*extra);
+    assert(*split_buf);
+    memcpy(*split_buf, buf, extra);
+    buf += extra;
+    split_buf++;
 
-    while (*buf) {
-        *split_buf = malloc(sizeof(char)*portion+1);
-        assert(*split_buf != NULL);
+    while (--threads > 0) {
+        *split_buf = malloc(sizeof(char)*portion);
+        assert(*split_buf);
         memcpy(*split_buf, buf, portion);
         buf += portion;
         split_buf++;
     }
-    split_buf -= threads;
+    split_buf -= n;
     return split_buf;
 }
 
 
 // zip: compress and return a string
 char *zip(char *s)
-{
-    char *zs = malloc(sizeof(char)*strlen(s));
+{    
+    char *zs = malloc(sizeof(char)*strlen(s)+1);
     assert(zs);
-    int prev, count, c, i;
+    int prev, count, i;
     count = 1;
     i = 0;
 
@@ -78,82 +101,19 @@ char *zip(char *s)
     *zs = prev; // last char
     // bring pointer back
     zs -= i-1;
-    //printf("%s\n", zs);
     return zs;
 }
 
 
-FILE *zip_write(char *s, char *f)
-{
-    FILE *fp = fopen(f, "a");
-    fprintf(fp, "%s", s);
-    return fp;
-}
-
-
+// tzip: take thread's string and print it to stdout
 void *tzip(void *arg)
 {
     char *str = (char*)arg;
     assert(pthread_mutex_lock(&m) == 0);
     char *new_zip = zip(str);
-    FILE *fp = zip_write(new_zip, "com.txt");
-    fclose(fp);
+    fprintf(stdout, "%s\n", new_zip);
     assert(pthread_mutex_unlock(&m) == 0);
+
+    thr_exit();
     return NULL;
-}
-
-
-int main(int argc, char **argv)
-{
-    struct stat s;
-    pthread_t *t;   // array of threads
-    char *buffer;
-    const char *file;
-    int threads, fd, status, size, rdr, i;
-    float ttime;	
-    clock_t start = clock();
-
-    //file = "../../LICENSE";
-    file = "test.txt";
-    //file = "../../../crap/bible.txt";
-
-    // get # of cpus on system
-    threads = sysconf(_SC_NPROCESSORS_ONLN);
-
-    // open file
-	fd = open(file, O_RDONLY);
-    assert(fd > -1);
-
-    // get size of file
-	status = fstat(fd, &s);
-	size = s.st_size;
-
-    buffer = malloc(sizeof(char)*size+2); assert(buffer);
-	
-    // read into file into buffer
-    rdr = read(fd, buffer, size);
-    assert(rdr > 0);
-
-    // split file into equal chunks
-    char **test = buf_split(buffer, size, threads);
-
-    t = malloc(sizeof(pthread_t)*threads); assert(t);
-    for (i = 0; i < threads; i++) {
-        assert(pthread_create(&t[i], NULL, tzip, test[i]) == 0);
-        // join in the same loop to resconstruct
-        // the new file the same as the old
-        assert(pthread_join(t[i], NULL) == 0);
-    }
-   /*******************************************
-    for (i = 0; i < threads; i++)
-       assert(pthread_join(t[i], NULL) == 0);
-**********************************************/
-    clock_t end = clock();
-    ttime = (end - start)/(double)CLOCKS_PER_SEC;
-    printf("time: %f\n", ttime);
-
-    free(test);
-    free(buffer);
-
-    return 0;
 }
