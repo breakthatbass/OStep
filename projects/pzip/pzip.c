@@ -17,22 +17,22 @@ pthread_cond_t c = PTHREAD_COND_INITIALIZER;
 
 
 // thr_wait: stop and wait for thread to finish before moving on
-void thr_wait()
+void pthread_wait()
 {
-    assert(pthread_mutex_lock(&m) == 0);
+    _pthread_mutex_lock(&m);
     while (done == 0)
-        assert(pthread_cond_wait(&c, &m) == 0);
-    assert(pthread_mutex_unlock(&m) == 0);
+        _pthread_cond_wait(&c, &m);
+    _pthread_mutex_unlock(&m);
 }
 
 
 // thr_exit: send signal that thread is done
-void thr_exit()
+void pthread_done()
 {
-    assert(pthread_mutex_lock(&m) == 0);
+    _pthread_mutex_lock(&m);
     done = 1;
-    assert(pthread_cond_signal(&c) == 0);
-    assert(pthread_mutex_unlock(&m) == 0);
+    _pthread_cond_signal(&c);
+    _pthread_mutex_unlock(&m);
 }
 
 
@@ -109,11 +109,10 @@ char *zip(char *s)
 void *tzip(void *arg)
 {
     char *str = (char*)arg;
-    assert(pthread_mutex_lock(&m) == 0);
+    _pthread_mutex_lock(&m);
     char *new_zip = zip(str);
     fprintf(stdout, "%s\n", new_zip);
-    assert(pthread_mutex_unlock(&m) == 0);
-
-    thr_exit();
+    _pthread_mutex_unlock(&m);
+    pthread_done();
     return NULL;
 }

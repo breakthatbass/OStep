@@ -2,11 +2,18 @@
 #define __PZIP_H__
 
 #include <pthread.h>
-#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+// macros for error checking
+#define _pthread_mutex_lock(lock)       assert(pthread_mutex_lock(lock) == 0);
+#define _pthread_mutex_unlock(lock)     assert(pthread_mutex_unlock(lock) == 0);
+#define _pthread_cond_wait(cond, lock)  assert(pthread_cond_wait(cond, lock) == 0);
+#define _pthread_cond_signal(cond)      assert(pthread_cond_signal(cond) == 0);
 
 // thread functions to wait and signal threads
-void thr_wait();
-void thr_exit();
+void pthread_wait();
+void pthread_exit();
 
 // buf_split: split file buffer into threads sections
 char **buf_split(char *buf, int size, int threads);
