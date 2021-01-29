@@ -47,21 +47,21 @@ char **buf_split(char *buf, int size, int threads)
     extra = size%threads;
     extra+=portion;
 
-    split_buf = malloc(sizeof(char*)*size);
+    split_buf = calloc(size+20, sizeof(char*));
     assert(split_buf);
 
     // if the portion division leaves an offset, add that
     // extra amount to the first string
-    *split_buf = malloc(sizeof(char)*extra);
+    *split_buf = calloc(extra*2+5, sizeof(char));
     assert(*split_buf);
-    memcpy(*split_buf, buf, extra);
+    strncpy(*split_buf, buf, extra);
     buf += extra;
     split_buf++;
 
     while (--threads > 0) {
-        *split_buf = malloc(sizeof(char)*portion);
+        *split_buf = calloc(portion*2+5, sizeof(char));
         assert(*split_buf);
-        memcpy(*split_buf, buf, portion);
+        strncpy(*split_buf, buf, portion);
         buf += portion;
         split_buf++;
     }
@@ -73,7 +73,7 @@ char **buf_split(char *buf, int size, int threads)
 // zip: compress and return a string
 char *zip(char *s)
 {    
-    char *zs = malloc(sizeof(char)*strlen(s)+1);
+    char *zs = calloc((strlen(s)+2), sizeof(char));
     assert(zs);
     int prev, count, i;
     count = 1;
@@ -111,8 +111,9 @@ void *tzip(void *arg)
     char *str = (char*)arg;
     _pthread_mutex_lock(&m);
     char *new_zip = zip(str);
-    fprintf(stdout, "%s\n", new_zip);
+    fprintf(stdout, "%s", new_zip);
     _pthread_mutex_unlock(&m);
     pthread_done();
     return NULL;
 }
+

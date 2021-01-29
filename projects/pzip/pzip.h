@@ -2,7 +2,6 @@
 #define __PZIP_H__
 
 #include <pthread.h>
-#include <stdlib.h>
 #include <assert.h>
 
 // macros for error checking
@@ -23,5 +22,7 @@ char *zip(char *s);
 
 // tzip: send thread's compressed string to stdout
 void *tzip(void *arg);
+
+void free_buf(char **buf, int len);
 
 #endif
