@@ -47,21 +47,21 @@ char **buf_split(char *buf, int size, int threads)
     extra = size%threads;
     extra+=portion;
 
-    split_buf = calloc(size+20, sizeof(char*));
+    split_buf = calloc(size, sizeof(char*));
     assert(split_buf);
 
     // if the portion division leaves an offset, add that
     // extra amount to the first string
-    *split_buf = calloc(extra*2+5, sizeof(char));
+    *split_buf = calloc(extra+1, sizeof(char));
     assert(*split_buf);
-    strncpy(*split_buf, buf, extra);
+    memcpy(*split_buf, buf, extra);
     buf += extra;
     split_buf++;
 
     while (--threads > 0) {
-        *split_buf = calloc(portion*2+5, sizeof(char));
+        *split_buf = calloc(portion+1, sizeof(char));
         assert(*split_buf);
-        strncpy(*split_buf, buf, portion);
+        memcpy(*split_buf, buf, portion);
         buf += portion;
         split_buf++;
     }
@@ -116,4 +116,3 @@ void *tzip(void *arg)
     pthread_done();
     return NULL;
 }
-

@@ -53,7 +53,6 @@ int main(int argc, char **argv)
             assert(pthread_create(&t[i], NULL, tzip, split_file[i]) == 0);
             pthread_wait();  // wait for thread to finish before moving on
         }
-
         free(split_file);
         free(buffer);
         free(t);
