@@ -28,5 +28,11 @@ more info: http://blog.cs4u.us/2014/04/using-semaphores-on-mac-os-x.html
 
 3. Now go one step further and by implementing a general solution to **barrier synchronization**. Assume there are two points in an sequential piece of code, called `P1` and `P2`. Putting a **barrier** between `P1` and `P2` guaruntees that all threads will execute `P1` before anyone executes `P2`. Your task: write the code to implement a `barrier()` function that cna be used in this manner. It is safe to assume you know `N` (the total number of threads in the running program) and that all `N` threads will try to enter the barrier. Again, you should likely use two semaphores to achieve the solution, and some other integers to count things. See `barrier.c` for details.
 
-4. Now let's solve the **reader-writer problem**, also described in the text. In this first take, don't worry about starvation. How can you ensure that all readers and writers eventually make progress? See `reader-writer-nostarve.c` for details.
+4. Now let's solve the **reader-writer problem**, also described in the text. In this first take, don't worry about starvation. See the code in `reader-writer.c` for details. Add `sleep()` calls to your code to demonstrate it works as you expect. Can you show the existence of the stravation prblem?
 
+5. Let's look at the reader-writer problem again, but this time, worry about the startvation. How can you ensure that all readers and writers eventually make progress? See `reader-writer-nostarve.c` for details.
+
+6. Use semaphores to build a **no-starve mutex**, in which any thread that tries to aquire the mutex will eventually obtain it. See the code in `mutex-nostarve.c` for more information.
+
+7. Liked these problems? See [Downey's free text](https://greenteapress.com/semaphores/LittleBookOfSemaphores.pdf) for more just like them. And don't forget, have fun! But, you always do when you code, no?
+    - yes, I usually do have fun...but occasionally not.
