@@ -13,11 +13,9 @@ void *child_1(void *arg) {
     printf("child 1: before\n");
     // what goes here?
     sleep(1);
-    sem_wait(s1);
+    sem_post(s1);
     sem_wait(s2);
     printf("child 1: after\n");
-    sem_post(s1);
-    sem_post(s2);
     return NULL;
 }
 
@@ -25,11 +23,9 @@ void *child_2(void *arg) {
     printf("child 2: before\n");
     // what goes here?
     sleep(1);
-    sem_wait(s1);
-    sem_wait(s2);
-    printf("child 2: after\n");
-    sem_post(s1);
     sem_post(s2);
+    sem_wait(s1);
+    printf("child 2: after\n");
     return NULL;
 }
 
