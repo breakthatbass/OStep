@@ -27,3 +27,6 @@ more info: http://blog.cs4u.us/2014/04/using-semaphores-on-mac-os-x.html
 2. Now let's generalize this a bit by investigating the **rendezvous** problem. The problem is as follows: you have two threads, each of which are about to enter the rendezvous part of your code. Neither should exit this part of the code before the other enters it. Consider using two semaphores for this task., see `rendezvous.c` for details.
 
 3. Now go one step further and by implementing a general solution to **barrier synchronization**. Assume there are two points in an sequential piece of code, called `P1` and `P2`. Putting a **barrier** between `P1` and `P2` guaruntees that all threads will execute `P1` before anyone executes `P2`. Your task: write the code to implement a `barrier()` function that cna be used in this manner. It is safe to assume you know `N` (the total number of threads in the running program) and that all `N` threads will try to enter the barrier. Again, you should likely use two semaphores to achieve the solution, and some other integers to count things. See `barrier.c` for details.
+
+4. Now let's solve the **reader-writer problem**, also described in the text. In this first take, don't worry about starvation. How can you ensure that all readers and writers eventually make progress? See `reader-writer-nostarve.c` for details.
+
