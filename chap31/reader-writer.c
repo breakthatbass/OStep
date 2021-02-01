@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <semaphore.h>
 #include <errno.h>
 #include <assert.h>
 #include "common_threads.h"
@@ -20,17 +19,14 @@ char *lockstr = "/lock";
 char *writelockstr = "/writelock";
 
 void rwlock_init(rwlock_t *rw) {
+    // MacOS is requiring unlinking before opening for some reason
+    // otherwise it returns SEM_FAILED with errno EACCES - no persmission!
     sem_unlink(lockstr);
-    rw->lock = sem_open(lockstr, O_CREAT, O_EXCL, 1);
-    if (rw->lock == SEM_FAILED) {
-        if (errno == EACCES) {
-            printf("yep\n");
-        }
-        exit(1);
-    }
     sem_unlink(writelockstr);
-    rw->lock = sem_open(writelockstr, O_CREAT, O_EXCL, 1);
-    //rw->writelock = Sem_open(writelockstr, 1);
+
+    rw->lock = Sem_open(lockstr, 1);
+    rw->writelock = Sem_open(writelockstr, 1);
+
     rw->readers = 0;
 }
 
