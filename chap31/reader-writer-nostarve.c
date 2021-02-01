@@ -10,22 +10,37 @@
 typedef struct __rwlock_t {
     sem_t *lock;
     sem_t *writelock;
+    sem_t *readlock;
     int readers;
 } rwlock_t;
 
+char *lockstr = "/lock";
+char *writelockstr = "/writelock";
+char *readlockstr = "/readlock";
 
 void rwlock_init(rwlock_t *rw) {
-    rw->lock = Sem_open("/lock", 1);
-    rw->writelock = Sem_open("/writelock", 1);
+    // MacOS is requiring unlinking before opening for some reason
+    // otherwise it returns SEM_FAILED with errno EACCES - no persmission!
+    // this only seems to be required when a variable is passed in for the 
+    // first parameter of sem_open rather than a raw string
+    sem_unlink(lockstr);
+    sem_unlink(writelockstr);
+    sem_unlink(readlockstr);
+
+    rw->lock = Sem_open(lockstr, 1);
+    rw->writelock = Sem_open(writelockstr, 1);
+    rw->readlock = Sem_open(readlockstr, 1);
     rw->readers = 0;
 }
 
 void rwlock_acquire_readlock(rwlock_t *rw) {
+    Sem_wait(rw->readlock);
     Sem_wait(rw->lock);
     rw->readers++;
     if (rw->readers == 1)
         Sem_wait(rw->writelock);
     Sem_post(rw->lock);
+    Sem_post(rw->readlock);
 }
 
 void rwlock_release_readlock(rwlock_t *rw) {
@@ -37,11 +52,13 @@ void rwlock_release_readlock(rwlock_t *rw) {
 }
 
 void rwlock_acquire_writelock(rwlock_t *rw) {
+    Sem_wait(rw->readlock);
     Sem_wait(rw->writelock);
 }
 
 void rwlock_release_writelock(rwlock_t *rw) {
     Sem_post(rw->writelock);
+    Sem_post(rw->readlock);
 }
 
 //

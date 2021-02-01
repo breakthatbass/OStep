@@ -32,6 +32,29 @@ more info: http://blog.cs4u.us/2014/04/using-semaphores-on-mac-os-x.html
 
 5. Let's look at the reader-writer problem again, but this time, worry about the startvation. How can you ensure that all readers and writers eventually make progress? See `reader-writer-nostarve.c` for details.
 
+    - I was able to do it by adding another lock (`readlock`) in the struct.
+    ```c
+    typedef struct __rwlock_t {
+        sem_t *lock;
+        sem_t *writelock;
+        sem_t *readlock;
+        int readers;
+    } rwlock_t;
+    ```
+
+    And then basically wrapping the body of the the `rwlock_acquire_readlock` function in the `readlock` semaphore lock.
+    ```c
+    void rwlock_acquire_readlock(rwlock_t *rw) {
+        Sem_wait(rw->readlock);
+        Sem_wait(rw->lock);
+        rw->readers++;
+        if (rw->readers == 1)
+            Sem_wait(rw->writelock);
+        Sem_post(rw->lock);
+        Sem_post(rw->readlock);
+    }
+    ```
+
 6. Use semaphores to build a **no-starve mutex**, in which any thread that tries to aquire the mutex will eventually obtain it. See the code in `mutex-nostarve.c` for more information.
 
 7. Liked these problems? See [Downey's free text](https://greenteapress.com/semaphores/LittleBookOfSemaphores.pdf) for more just like them. And don't forget, have fun! But, you always do when you code, no?
