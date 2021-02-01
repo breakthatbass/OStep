@@ -37,10 +37,11 @@ void barrier(barrier_t *b) {
     sem_wait(b->s);
     sem_wait(b->all_in);
     b->tin++;
+
     // hold them up here until b-tin == b->threads
-    while (b->tin < b->threads) {
-        ;
-    }
+    while (b->tin < b->threads)
+        ; // simple spinner works...but deadlock can occasionally happen
+
     sem_post(b->all_in);
     sem_post(b->s);
 }
