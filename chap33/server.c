@@ -48,9 +48,9 @@ int main()
 
 	// clear servaddr struct
 	memset(&servaddr, 0, sizeof(servaddr));
-   servaddr.sin_family = AF_INET;		// set to IPv4 for simplicity
-   servaddr.sin_addr.s_addr = htonl(INADDR_ANY); // use my IP
-   servaddr.sin_port = htons(PORT);		// short, network byte order
+	servaddr.sin_family = AF_INET;		// set to IPv4 for simplicity
+	servaddr.sin_addr.s_addr = htonl(INADDR_ANY); // use my IP
+	servaddr.sin_port = htons(PORT);		// short, network byte order
 	
 	// create the socket file descriptor
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -72,28 +72,18 @@ int main()
 	}
 	
 	printf("server waiting for connection...\n");
-
-	// we wait and listen for any connection to our server
-	// if we get a bite, we accept() it and try to successfully
-	// connect. if we do, we fork a new process and send the
-	// message through a new file descriptor
-	while (1) {
-		len = sizeof client_addr;
-		newfd = accept(sockfd, (SA*)&client_addr, &len);
-		if (newfd < 0) {
-			perror("accept");
-			continue;	// keep trying
-		}
-		// create a child process and send the message
-		if (!fork()) {
-			close(sockfd);	// child doesn't need the lister
-			if (send(newfd, time, strlen(time), 0) < 0)
-				perror("send");
-			close(newfd);
-			exit(0);	// succesfully exit the server
-		}
-		close(newfd);	// parent doesn't need this file descriptor
+	
+	// we're just going to try to connect to one client
+	// send the message once and quit
+	len = sizeof client_addr;
+	newfd = accept(sockfd, (SA*)&client_addr, &len);
+	if (newfd < 0) {
+		perror("accept");
+		exit(EXIT_FAILURE);
 	}
+	if (send(newfd, time, strlen(time), 0) < 0)
+		perror("send");
+	close(newfd);
 	close(sockfd);
 	return 0;
 }
