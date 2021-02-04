@@ -16,3 +16,7 @@ The homework for this chapter mainly revolves around network programming which t
     ```
     To get your hostname, on MacOS and Linux, it can be retrieved with the `hostname` command. For port the server is set to port 3490. 
 
+2. Now, add the `select()` interface. Build a main program that can accept multiple connections, and an event loop that checks which file descriptors have data on them, and then read ond process those requests. Make sure to carefully test that you are using `select()` correctly.
+
+    [select.c](https://github.com/breakthatbass/OStep/blob/main/chap33/select.c)
+
