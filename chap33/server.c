@@ -32,7 +32,6 @@
 int main()
 {
 	int sockfd, newfd;
-	//struct addrinfo hints, *servinfo, *p;
 	struct sockaddr_in servaddr;
 	struct sockaddr_storage client_addr;
 	socklen_t len;
