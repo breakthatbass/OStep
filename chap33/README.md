@@ -20,3 +20,26 @@ The homework for this chapter mainly revolves around network programming which t
 
     [select.c](https://github.com/breakthatbass/OStep/blob/main/chap33/select.c)
 
+
+3. Next, let's make the requests a little more interesting, to mimic a simple web or file server. Each request should be to read teh contents of a file (named in the request), and the server should respond by reading the file into a buffer, the returning the contents to the client. Use the standard `open()`, `read()`, `close()` system calls to implement this feature. Be a little careful here: If you leave this running for a long time, someone may figure out how to use it to read all the files on your computer!
+
+    [`file-server.c`](https://github.com/breakthatbass/OStep/blob/main/chap33/file-server.c)  
+    [`file-client.c`](https://github.com/breakthatbass/OStep/blob/main/chap33/file-client.c)  
+
+    - compile:  
+        ```
+        gcc -o file-server file-server.c
+        gcc -o file-client file-client.c
+        ```
+    - usage:
+        ```
+        ./file-server   // for now, the server port is 3490
+        ./file-client <hostname> <port>
+        ```
+    - Run the server first then run the client. It will alert when they successfully connect. 
+    
+    - Type a file path into the client and hit enter. If the server can successfully `open` and `read` from the file, the client will be able to display the contents of the file.
+
+    - BUGS: the client is only able to send and recieve one file at a time. You must exit the client and start it up again to read from more files.
+
+
