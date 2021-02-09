@@ -42,7 +42,6 @@ void clean_str(char *s)
 int main(int argc, char **argv)
 {
 	int sockfd, numbytes;
-	char buf[MAXDATASIZE];
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
 	char s[INET6_ADDRSTRLEN];
@@ -99,6 +98,9 @@ int main(int argc, char **argv)
 		numbytes = 0;
 		// get client request from stdin
 		int b = read(STDIN_FILENO, file_request, MAXMSG);
+		if (b < 0) {
+			perror("client: read");
+		}
 
 		clean_str(file_request);
 

@@ -32,7 +32,6 @@
 // get_file: open file, read contents info a buffer, return buffer
 char *get_file(const char *path) {
 	int n, bytes;
-	char c;
 	static char buf[MAXDATA];
 
 	// try to open file
@@ -61,7 +60,7 @@ int main()
 	struct sockaddr_in servaddr;
 	struct sockaddr_storage client_addr;
 	socklen_t len;
-	int rv, nbytes;
+	int nbytes;
 	char file_request[FILENAME];	// buf to hold client's request string
 
 	// clear servaddr struct
