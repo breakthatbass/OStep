@@ -42,4 +42,26 @@ The homework for this chapter mainly revolves around network programming which t
 
     - BUGS: the client is only able to send and recieve one file at a time. You must exit the client and start it up again to read from more files.
 
+4. Now, instead of using standard I/O system calls, use the asynchronous I/O interfaces as described in the chapter. How hard was it to incorporate asynchronus interfaces into your program?  
+
+    - Pretty simple. Basically you just put your file info into the `aiocb` struct and `aio_read()` takes that struct as an argument. There is a little more setup work compared to the normal `read()` though.  Other than the function below, I just replaced `read` with `aio_read`.
+
+    ```c
+    // function to fill the struct
+    struct aiocb *aio_init(int fd, int bufsize, char *buf)
+    {
+        struct aiocb *n = malloc(sizeof(struct aiocb));
+        if (n == NULL) {
+            perror("aio_int: malloc");
+            exit(EXIT_FAILURE);
+        }
+
+        n->aio_fildes = fd;
+        n->aio_buf = buf;
+        n->aio_nbytes = bufsize;
+
+        return n;
+    }
+    ```
+
 
