@@ -8,25 +8,30 @@
  * attempts to open that file, and if it can, reads it into a buffer
  * and send the buffer back to the client.
  * the client then displays it.
+ * 
+ * this server keeps a cache of recently accessed files up to NUMFILES files.
+ * and when given an interrupt signal, it will clear the cache.
  *
- * exit with ctrl-c for now
+ * ctrl-c will send an an interrupt to the server and it will clear the cache
+ *
  *
  * */
 
 #include "tcp.h"
 
-#define NUMFILES 5  // max number of files to store in the cache
+#define NUMFILES 10  // max number of files to store in the cache
 
 static char file_cache[NUMFILES][MAXDATA];
 static int file_count = 0;
 
-void clear_cache()
+void clear_cache(int sig)
 {
-	for (int i = 0; i < NUMFILES; i++) {
+	for (int i = 0; i < file_count; i++) {
 		// uncomment these for testing the cache
 		//printf("**************** FILE %d: ******************\n", i);
 		//printf("%s\n", file_cache[i]);
 		memset(file_cache[i], 0, MAXDATA);
+		printf("cleared cache - signal: %d\n", sig);
 	}
 	file_count = 0;
 }
@@ -73,6 +78,7 @@ int main()
 	int sockfd, filefd;
 	struct sockaddr_in servaddr;
 	struct sockaddr_storage client_addr;
+	//struct sigaction sa;	// for sending signals
 	socklen_t len;
 	int nbytes;
 	char file_request[FILENAME] = {0};	// buf to hold client's request string
@@ -110,9 +116,12 @@ int main()
 	
 	while (1) {
 
-		if (file_count == 5) {
-			print_cache();
+		// use interrupt to clear out the cache
+		if (signal(SIGINT, clear_cache) == SIG_ERR) {
+			perror("signal");
+			exit(EXIT_FAILURE);
 		}
+
 		// clear the file_request buffer
 		memset(file_request, 0, FILENAME);
 		open_file = NULL;
