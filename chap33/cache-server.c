@@ -26,14 +26,18 @@ static int file_count = 0;
 
 void clear_cache(int sig)
 {
-	for (int i = 0; i < file_count; i++) {
-		// uncomment these for testing the cache
-		//printf("**************** FILE %d: ******************\n", i);
-		//printf("%s\n", file_cache[i]);
-		memset(file_cache[i], 0, MAXDATA);
-		printf("cleared cache - signal: %d\n", sig);
+	if (sig == SIGINT) {
+		for (int i = 0; i < file_count; i++) {
+			// uncomment these for testing the cache
+			//printf("**************** FILE %d: ******************\n", i);
+			//printf("%s\n", file_cache[i]);
+			memset(file_cache[i], 0, MAXDATA);
+			printf("cleared cache - signal: %d\n", sig);
+		}
+		file_count = 0;
+	} else {
+		fprintf(stderr, "SIGNAL: %d\n", sig);
 	}
-	file_count = 0;
 }
 
 // get_file: open file, read contents info a buffer, return buffer
