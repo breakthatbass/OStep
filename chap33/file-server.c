@@ -79,13 +79,6 @@ int main()
 		exit(EXIT_FAILURE);
 	}
 
-	// this prevents the 'bind: address already in use' issue
-	int yes = 1;
-	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) < 0) {
-		perror("setsocket");
-		exit(EXIT_FAILURE);
-	}
-
 	if (listen(sockfd, 10) < 0) {
 		perror("listen");
 		exit(EXIT_FAILURE);
