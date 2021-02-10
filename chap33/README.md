@@ -81,4 +81,5 @@ The homework for this chapter mainly revolves around network programming which t
 			exit(EXIT_FAILURE);
 		}
     ```
+    - to send the interrupt signal, just hit `cntrl-c` in the server's terminal.
 
