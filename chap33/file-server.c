@@ -18,21 +18,19 @@
 // get_file: open file, read contents info a buffer, return buffer
 char *get_file(const char *path) {
 	int n, bytes;
-	static char buf[MAXDATA];
+	static char buf[MAXDATA] = {0};
 	memset(buf, 0, MAXDATA);
 	// try to open file
 	n = open(path, O_RDONLY);
 	if (n < 0) {
-		strcpy(buf, "problem opening file");
-		printf("%s\n", buf);
+		printf("problem opening file\n");
 		return NULL;
 	}
 
 	// if exists, read it into buffer on
 	bytes = read(n, buf, sizeof buf-1);
 	if (bytes < 0) {
-		strcpy(buf, "problem reading file");
-		printf("%s\n", buf);
+		printf("problem reading file\n");
 		return NULL;
 	}
 	close(n);
@@ -57,7 +55,7 @@ int main()
 	struct sockaddr_storage client_addr;
 	socklen_t len;
 	int nbytes;
-	char file_request[FILENAME];	// buf to hold client's request string
+	char file_request[FILENAME] = {0};	// buf to hold client's request string
 
 	// clear servaddr struct
 	memset(&servaddr, 0, sizeof servaddr);
@@ -88,7 +86,8 @@ int main()
 
 	int status;
 	int open = 1; // keep track if there's an accepted() fd
-	char *open_file;
+	char *open_file, *prb;
+	
 	while (1) {
 		// clear the file_request buffer
 		memset(file_request, 0, FILENAME);
@@ -143,7 +142,8 @@ int main()
 						memset(file_request, 0, FILENAME);
 						memset(&open_file, 0, sizeof open_file);
 						open_file = NULL;
-						send(filefd, "problemz", 8, 0);
+						prb = "problem opening file";
+						send(filefd, prb, strlen(prb), 0);
 					}
 			}
 		
