@@ -11,37 +11,12 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
+#include "tcp.h"
 
-#define MAXDATASIZE 100  // max number of bytes at once
-#define MAXMSG 25
-#define MAXDATA 4096
-#define SA struct sockaddr
-
-
-// clean_str: make sure the string doesn't have junk spaces around it
-void clean_str(char *s)
-{
-	size_t len = strlen(s);
-	char tmp[MAXMSG] = {0};
-	strncpy(tmp, s, len-1);
-	memset(s, 0, len);
-	strncpy(s, tmp, len-1);
-
-}
 
 int main(int argc, char **argv)
 {
-	int sockfd, numbytes;
+	int sockfd;
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
 	char s[INET6_ADDRSTRLEN];
@@ -89,38 +64,34 @@ int main(int argc, char **argv)
 
 	freeaddrinfo(servinfo);
 
-	// stay connect until client exits
-	int n;
+	int n = 0;
 	while (1) {
-		// make sure everything is cleared to minimize issues
-		memset(file_buf, 0, MAXDATA);  
-		memset(file_request, 0, sizeof MAXMSG);
-		numbytes = 0;
-		// get client request from stdin
-		int b = read(STDIN_FILENO, file_request, MAXMSG);
-		if (b < 0) {
-			perror("client: read");
-		}
 
-		clean_str(file_request);
+			// make sure everything is cleared to minimize issues
+			memset(file_buf, 0, MAXDATA);  
+			memset(file_request, 0, sizeof MAXMSG);
+			//numbytes = 0;
 
-		if (strcmp(file_request, "exit") == 0) {
-			close(sockfd);
-			exit(EXIT_SUCCESS);
-		}
+			if(read(STDIN_FILENO, file_request, MAXMSG) < 0) {
+				perror("client: read");
+				continue;
+			}
 
-		// send the request to the server
-		if ((numbytes = send(sockfd, file_request, strlen(file_request), 0)) < 0) {
-			perror("send");
-			exit(EXIT_FAILURE);
-		}
+			if (strcmp(file_request, "exit") == 0) {
+				close(sockfd);
+				exit(EXIT_SUCCESS);
+			}
 
-		// now we wait for a response
-		while ((n = read(sockfd, file_buf, MAXDATA-1)) > 0)
-			printf("%s\n", file_buf);
-		if (n < 0) {
-			perror("read");
-		}
+			if (send(sockfd, file_request, strlen(file_request), 0) < 0) {
+				perror("send");
+				exit(EXIT_FAILURE);
+			}
+
+			if (read(sockfd, file_buf, MAXDATA-1)>0)
+				printf("%s\n", file_buf);
+			if (n < 0) {
+				perror("read");
+			}
 	}
 
 	return 0;

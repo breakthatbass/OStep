@@ -13,33 +13,19 @@
  *
  * */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
-
-#define PORT 3490
-#define MAXDATA 4096
-#define FILENAME 256
-#define SA struct sockaddr		// for less messy casting
+#include "tcp.h"
 
 // get_file: open file, read contents info a buffer, return buffer
 char *get_file(const char *path) {
 	int n, bytes;
 	static char buf[MAXDATA];
-
+	memset(buf, 0, MAXDATA);
 	// try to open file
 	n = open(path, O_RDONLY);
 	if (n < 0) {
 		strcpy(buf, "problem opening file");
 		printf("%s\n", buf);
-		return buf;
+		return NULL;
 	}
 
 	// if exists, read it into buffer on
@@ -47,10 +33,20 @@ char *get_file(const char *path) {
 	if (bytes < 0) {
 		strcpy(buf, "problem reading file");
 		printf("%s\n", buf);
-		return buf;
+		return NULL;
 	}
 	close(n);
 	return buf;
+}
+
+// clean_str: make sure the string doesn't have junk spaces around it
+void clean_str(char *s)
+{
+	size_t len = strlen(s);
+	char tmp[25] = {0};
+	strncpy(tmp, s, len-1);
+	memset(s, 0, len);
+	strncpy(s, tmp, len-1);
 }
 
 
@@ -95,15 +91,16 @@ int main()
 		exit(EXIT_FAILURE);
 	}
 
-	
 	printf("server running and waiting for connection...\n");
 
+	int status;
 	int open = 1; // keep track if there's an accepted() fd
 	char *open_file;
 	while (1) {
 		// clear the file_request buffer
 		memset(file_request, 0, FILENAME);
-		memset(&open_file, 0, sizeof open_file);
+		open_file = NULL;
+
 		nbytes = 0;
 		if (open) {
 			// we're only going to connect to one client for now
@@ -136,17 +133,34 @@ int main()
 		} else {
 			// we got some data
 			// manage it and get file contents
-			open_file = get_file(file_request);
-			if (strcmp(open_file, "0") == 0) {
-				continue;
+			if (!fork()) {
+				
+				clean_str(file_request);
+				printf("recieved request from client\nFILE: %s\n", file_request);
+				
+				open_file = get_file(file_request);
+		
+				
+				if (open_file != NULL) {
+					if (send(filefd, open_file, strlen(open_file), 0) < 0) {
+						perror("send");
+					}
+					printf("FILE: %s sent succesfully\n", file_request);
+				} else {
+						memset(file_request, 0, FILENAME);
+						memset(&open_file, 0, sizeof open_file);
+						open_file = NULL;
+						send(filefd, "problemz", 8, 0);
+					}
 			}
-			if (send(filefd, open_file, strlen(open_file), 0) < 0) {
-				perror("send");
-				continue;
+		
+			if (wait(&status) >= 0) {
+				perror("wait");
+				exit(EXIT_FAILURE);
 			}
 		}
 	}
-	close(sockfd); 
+	close(sockfd);
 	return 0;
 }
 
