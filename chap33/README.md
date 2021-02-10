@@ -64,4 +64,20 @@ The homework for this chapter mainly revolves around network programming which t
     }
     ```
 
+5. For fun, add some signal handling to your code. One common use of signals is to poke a server to reload some kind of configuration file, or take some other kind of administrative action. Perhaps one natural way is to play around with this is to add a user-level file cache to your server, which stores recently accessed files. Implement a signal handler that clears the cache when the signal is sent to the server process.
+
+    - signals can be sent to a program with the `signal()` function. According to Rago & Stevens in *Advanced Programming in the UNIX Environment*, `select()` is "almost useless for UNIX systems" and suggests using `sigaction()`. I use `select()` because it's super simple and achieves the goal of the question.
+    - Interface for `select()`:  
+    ```c
+    void (*signal(int signo, void (*func)(int)))(int);
+    ```
+    This nonsense just takes a SIGNAL as the first param and a function for the second. The function is just a function that you want to trigger when the signal is sent.
+
+    ```c
+    // In the main loop
+    if (signal(SIGINT, clear_cache) == SIG_ERR) {
+			perror("signal");
+			exit(EXIT_FAILURE);
+		}
+    ```
 
