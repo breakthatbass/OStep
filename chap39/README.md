@@ -21,4 +21,4 @@
 	LAST MOD:         Fri Feb 19 13:59:47 2021
 	LAST STAT CHANGE: Fri Feb 19 13:59:47 2021
     ```
-    
+2. **List Files:** Write a program that lists files in the given directory. When called without any arguments, the program should just print the file names. When invoked with the `-l` flag, the program should print out information about each file, such as the owner, group, permissions, and other information obtained from the `stat()` system call. The program should take one additional argument, which is the directory to read, e.g., `myls -l directory`. if no directory is given, the program should just use the current working directory. Useful interfaces: `stat()`, `opendir()`, `readdir()`, `getcwd()`.
