@@ -12,6 +12,8 @@
 #include <grp.h> // getgrgid()
 
 // convert mode_t number into readable mode characters
+// credit for this function: 
+// https://stackoverflow.com/questions/10323060/printing-file-permissions-like-ls-l-using-stat2-in-c
 void print_mode(struct stat fileStat)
 {
     printf( (S_ISDIR(fileStat.st_mode)) ? "d" : "-");
