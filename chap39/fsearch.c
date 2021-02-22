@@ -15,9 +15,8 @@ void dir_search(char *path)
     struct dirent *d;
    
     if ((dp = opendir(path)) == NULL) {
-        printf("path: %s\n", path);
         perror("opendir");
-        exit(EXIT_FAILURE);
+        return 2;
     }
     
     while ((d = readdir(dp))) {
@@ -26,9 +25,12 @@ void dir_search(char *path)
             strcpy(npath, path);
             strcat(npath, "/");
             strcat(npath, d->d_name);
-            if (d->d_type == 4) {
+
+            // d_type 4 means we have a directory
+            // we then call this function on the new directory
+            if (d->d_type == 4)
                 dir_search(npath);
-            }
+        
             printf("%s\n", npath);
         }
     }
@@ -40,13 +42,17 @@ void dir_search(char *path)
 int main(int argc, char **argv)
 {
     char path[MAXPATH];
-    if (argc == 2) strcpy(path, *++argv);
-    else if (argc == 1) strcpy(path, ".");
+
+    if (argc == 2) 
+        strcpy(path, *++argv);
+    else if (argc == 1) 
+        strcpy(path, ".");
     else {
         fprintf(stderr, "usage: %s [path]\n", *argv);
-        exit(EXIT_FAILURE);
+        return 1;
     }
+
     dir_search(path);
 
-    exit(EXIT_SUCCESS);
+    return 0;
 }
