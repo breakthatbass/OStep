@@ -34,3 +34,4 @@
 
 4. **Recursive Search**: Write a program that prints out the names of each file and directory in the file system tree. For example, when run without arguments, the program should start with the current working directory and print its contents, as well as the contents of any sub-directories, etc., until the entire tree, root at the CWD is printed. If given a single argument (of a directory name), use that as the root of the tree instead. Refine your recursive search with more fun options, similar to the powerful `find` command line tool. Useful interfaces: figure it out.
 
+	- [fsearch.c](https://github.com/breakthatbass/OStep/blob/main/chap39/fsearch.c)
