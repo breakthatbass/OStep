@@ -28,3 +28,5 @@
 
     - [`myls.c`](https://github.com/breakthatbass/OStep/blob/main/chap39/myls.c)
     - It works exactly the same as the UNIX `ls` command and has the `-l` option.
+
+3. **Tail:** Write a program that prints out the last few lines of a file. The program should be efficient in that it seeks to near the end of the file, reads in a block of data, and then goes backwards until it finds the requested number of lines; at this point, it should print out those lines from beginning to the end of the file. To invoke the program one should type: `mytail -n file` where `n` is the number of lines at the end of the file to print. Useful interefaces: `stat()`, `lseek()`, `open()`, `read()`, `close()`.
