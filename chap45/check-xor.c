@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <assert.h>
 
 int main(int argc, char **argv)
 {
@@ -8,22 +9,13 @@ int main(int argc, char **argv)
     int fd, rc;
     char c;
 
-    if (argc != 2) {
-        fprintf(stderr, "usage: %s <file>\n", *argv);
-        return 1;
-    }
+    assert(argc == 2);
 
     fd = open(*++argv, O_RDONLY);
-    if (fd < 0) {
-        perror("open");
-        return 2;
-    }
+    assert(fd > -1);
 
     while ((rc = read(fd, &c, 1)) != 0) {
-        if (rc < 0) {
-            perror("read");
-            return 3;
-        }
+        assert(rc > -1);
         if (c != '\n')
             checksum ^= (c - '0'); 
     }
