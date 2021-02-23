@@ -21,5 +21,6 @@ int main(int argc, char **argv)
     }
 
     printf("checksum: %d\n", checksum);
+    close(fd);
     return 0;
 }
