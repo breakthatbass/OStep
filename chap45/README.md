@@ -10,3 +10,5 @@
     - [`check-fletcher.c`](https://github.com/breakthatbass/OStep/blob/main/chap45/check-fletcher.c)
 
 3. Now compare the performance of both: is one faster than the other? How does performance change as the size of the file changes? Use internal calls to `gettimeofday()` to time the programs. Which should you use if you care about performance? About checking ability?
+
+    - Trying both programs out on different file sizes, including a file of 5,000,000 lines, the `xor` checksum works faster but only by a fraction of a second.
